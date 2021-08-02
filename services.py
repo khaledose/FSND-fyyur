@@ -50,11 +50,10 @@ def get_shows_with_artist(id):
     past_shows = []
     upcoming_shows = []
     for i in range(len(shows)):
-        artist = db.session.query(Artist.name, Artist.image_link).filter(Artist.id==shows[i].artist_id).first()
         shows[i] = {
             'artist_id': shows[i].artist_id,
-            'artist_name': artist['name'],
-            'artist_image_link': artist['image_link'],
+            'artist_name': shows[i].artist.name,
+            'artist_image_link': shows[i].artist.image_link,
             'start_time': shows[i].start_time
         }
         if shows[i]['start_time'].date() >= date.today():
@@ -103,11 +102,10 @@ def get_shows_with_venues(id):
     past_shows = []
     upcoming_shows = []
     for i in range(len(shows)):
-        venue = db.session.query(Venue.name, Venue.image_link).filter(Venue.id==shows[i].venue_id).first()
         shows[i] = {
             'venue_id': shows[i].venue_id,
-            'venue_name': venue['name'],
-            'venue_image_link': venue['image_link'],
+            'venue_name': shows[i].venue.name,
+            'venue_image_link': shows[i].venue.image_link,
             'start_time': shows[i].start_time
         }
         if shows[i]['start_time'].date() >= date.today():
@@ -135,11 +133,11 @@ def get_full_artist(id):
 
 def get_all_shows():
     shows = Show.query.all()
+    result = []
     for i in range(len(shows)):
-        venue = db.session.query(Venue.name).filter(Venue.id==shows[i].venue_id).first()
-        artist = db.session.query(Artist.name, Artist.image_link).filter(Artist.id==shows[i].artist_id).first()
-        shows[i] = shows[i].to_dict()
-        shows[i]['venue_name'] = venue['name']
-        shows[i]['artist_name'] = artist['name']
-        shows[i]['artist_image_link'] = artist['image_link']
-    return shows
+        show = shows[i].to_dict()
+        show['venue_name'] = shows[i].venue.name
+        show['artist_name'] = shows[i].artist.name
+        show['artist_image_link'] = shows[i].artist.image_link
+        result.append(show)
+    return result

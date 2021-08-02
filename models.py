@@ -108,6 +108,8 @@ class Show(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id', ondelete='CASCADE'), nullable=False)
+    artist = db.relationship('Artist')
+    venue = db.relationship('Venue')
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id', ondelete='CASCADE'), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
 
