@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------#
 
 from server import app, db
-from flask import render_template, request, flash, redirect, url_for
+from flask import render_template, request, flash, redirect, url_for, jsonify
 import babel
 import dateutil.parser
 from models import Venue, Artist, Show
@@ -88,20 +88,19 @@ def create_venue_submission():
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
-    # TODO: Complete this endpoint for taking a venue_id, and using
-    # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
+    success = False
     try:
-        venue = Venue.query.filter_by(id=venue_id).delete()
+        Venue.query.filter_by(id=venue_id).delete()
         db.session.commit()
-        flash('Venue ' + venue.name + ' was successfully deleted!')
+        flash('Venue was successfully deleted!')
+        success = True
     except:
         db.session.rollback()
-        flash('An error occurred. Venue ' + venue.name + ' could not be deleted.')
+        success = False
+        flash('An error occurred. Venue could not be deleted.')
     finally:
         db.session.close()
-    # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
-    # clicking that button delete it from the db then redirect the user to the homepage
-    return None
+    return jsonify({'success': success})
 
 #  Artists
 #  ----------------------------------------------------------------
