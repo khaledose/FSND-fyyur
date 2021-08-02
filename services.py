@@ -124,7 +124,6 @@ def get_full_artist(id):
     artist['upcoming_shows'] = upcoming_shows
     artist['past_shows_count'] = len(past_shows)
     artist['upcoming_shows_count'] = len(upcoming_shows)
-    print(artist)
     return artist
 
 #----------------------------------------------------------------------------#

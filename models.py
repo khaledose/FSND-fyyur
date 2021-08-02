@@ -19,7 +19,7 @@ class Venue(db.Model):
     phone = db.Column(db.String(120), nullable=False)
     genres = db.Column(db.String(160), nullable=False)
     image_link = db.Column(db.String(500), nullable=True)
-    website_link = db.Column(db.String(120), nullable=True)
+    website = db.Column(db.String(120), nullable=True)
     facebook_link = db.Column(db.String(120), nullable=True)
     seeking_talent = db.Column(db.Boolean, nullable=False)
     seeking_description = db.Column(db.String(500), nullable=True)
@@ -34,7 +34,7 @@ class Venue(db.Model):
                 phone={self.phone}, 
                 genres={self.genres},
                 image_link={self.image_link},
-                website_link={self.website_link},
+                website={self.website},
                 facebook_link={self.facebook_link},
                 seeking_talent={self.seeking_talent},
                 seeking_description={self.seeking_description}
@@ -50,7 +50,7 @@ class Venue(db.Model):
             "city": self.city,
             "state": self.state,
             "phone": self.phone,
-            "website_link": self.website_link,
+            "website": self.website,
             "facebook_link": self.facebook_link,
             "seeking_talent": self.seeking_talent,
             "seeking_description": self.seeking_description,
@@ -67,7 +67,7 @@ class Artist(db.Model):
     phone = db.Column(db.String(120), nullable=False)
     genres = db.Column(db.String(160), nullable=False)
     image_link = db.Column(db.String(500), nullable=True)
-    website_link = db.Column(db.String(120), nullable=True)
+    website = db.Column(db.String(120), nullable=True)
     facebook_link = db.Column(db.String(120), nullable=True)
     seeking_venue = db.Column(db.Boolean, nullable=False)
     seeking_description = db.Column(db.String(500), nullable=True)
@@ -81,7 +81,7 @@ class Artist(db.Model):
                 phone={self.phone}, 
                 genres={self.genres},
                 image_link={self.image_link},
-                website_link={self.website_link},
+                website={self.website},
                 facebook_link={self.facebook_link},
                 seeking_venue={self.seeking_venue},
                 seeking_description={self.seeking_description}
@@ -96,7 +96,7 @@ class Artist(db.Model):
             "city": self.city,
             "state": self.state,
             "phone": self.phone,
-            "website_link": self.website_link,
+            "website": self.website,
             "facebook_link": self.facebook_link,
             "seeking_venue": self.seeking_venue,
             "seeking_description": self.seeking_description,
