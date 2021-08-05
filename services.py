@@ -10,14 +10,6 @@ from sqlalchemy.sql.functions import func
 # Venues' Services.
 #----------------------------------------------------------------------------#
 
-def format_genres(genres):
-    """
-    Args: genres: a string of genres separated by ',' and starts and ends with curly braces.
-
-    Returns: list of strings representing the genres
-    """
-    return genres[1:-1].split(',')
-
 def get_mini_venue(id, name):
     """
     Args: id: Venue ID, name: Venue name
@@ -28,11 +20,12 @@ def get_mini_venue(id, name):
         'id': id,
         'name': name,
         'num_upcoming_shows': db.session
-            .query(Show)
-            .filter(Show.venue_id==id)
-            .filter(Show.start_time > date.today())
-            .count()
+        .query(Show)
+        .filter(Show.venue_id == id)
+        .filter(Show.start_time > date.today())
+        .count()
     }
+
 
 def get_all_venues():
     """
@@ -45,11 +38,13 @@ def get_all_venues():
     venues_list = []
     for area in areas:
         area = dict(area)
-        query_result = db.session.query(Venue.id, Venue.name).filter_by(city=area['city'], state=area['state']).all()
+        query_result = db.session.query(Venue.id, Venue.name).filter_by(
+            city=area['city'], state=area['state']).all()
         venues = [get_mini_venue(v['id'], v['name']) for v in query_result]
         area['venues'] = venues
         venues_list.append(area)
     return venues_list
+
 
 def get_search_venues(search_term):
     """
@@ -59,9 +54,11 @@ def get_search_venues(search_term):
 
     Returns: Dictionary containing results' count and a list of found venues.
     """
-    query_result = db.session.query(Venue.id, Venue.name).filter(Venue.name.ilike(f'%{search_term}%')).all()
+    query_result = db.session.query(Venue.id, Venue.name).filter(
+        Venue.name.ilike(f'%{search_term}%')).all()
     response = [get_mini_venue(v['id'], v['name']) for v in query_result]
     return {'count': len(response), 'data': response}
+
 
 def get_shows_with_artist(id):
     """
@@ -77,12 +74,12 @@ def get_shows_with_artist(id):
     past_shows = []
     upcoming_shows = []
     shows = db.session.query(
-        Artist.id, 
-        Artist.name, 
-        Artist.image_link, 
+        Artist.id,
+        Artist.name,
+        Artist.image_link,
         Show.start_time
-        ).join(Artist
-        ).filter(Show.venue_id==id).all()
+    ).join(Artist
+           ).filter(Show.venue_id == id).all()
 
     for show in shows:
         show = dict(zip(keys, show))
@@ -94,6 +91,7 @@ def get_shows_with_artist(id):
             past_shows.append(show)
     return past_shows, upcoming_shows
 
+
 def get_full_venue(id):
     """
     Gets all details of the selected venue including past and upcoming shows.
@@ -102,9 +100,7 @@ def get_full_venue(id):
 
     Returns: Dictionary of all details related to that venue.
     """
-    venue = Venue.query.get(id)
-    venue.genres = format_genres(venue.genres)
-    venue = venue.to_dict()
+    venue = Venue.query.get(id).to_dict()
     past_shows, upcoming_shows = get_shows_with_artist(id)
     venue['past_shows'] = past_shows
     venue['upcoming_shows'] = upcoming_shows
@@ -116,6 +112,7 @@ def get_full_venue(id):
 # Artists' Services.
 #----------------------------------------------------------------------------#
 
+
 def get_mini_artist(id, name):
     """
     Args: id: Artist ID, name: Artist name
@@ -126,11 +123,12 @@ def get_mini_artist(id, name):
         'id': id,
         'name': name,
         'num_upcoming_shows': db.session
-            .query(Show)
-            .filter(Show.artist_id==id)
-            .filter(Show.start_time > date.today())
-            .count()
+        .query(Show)
+        .filter(Show.artist_id == id)
+        .filter(Show.start_time > date.today())
+        .count()
     }
+
 
 def get_all_artists():
     """
@@ -140,6 +138,7 @@ def get_all_artists():
     """
     return db.session.query(Artist.id, Artist.name).order_by('id').all()
 
+
 def get_search_artists(search_term):
     """
     Searches for artists that contains the given search term.
@@ -148,9 +147,11 @@ def get_search_artists(search_term):
 
     Returns: Dictionary containing results' count and a list of found artists.
     """
-    query_result = db.session.query(Artist.id, Artist.name).filter(Artist.name.ilike(f'%{search_term}%')).all()
+    query_result = db.session.query(Artist.id, Artist.name).filter(
+        Artist.name.ilike(f'%{search_term}%')).all()
     response = [get_mini_artist(v['id'], v['name']) for v in query_result]
     return {'count': len(response), 'data': response}
+
 
 def get_shows_with_venues(id):
     """
@@ -166,12 +167,12 @@ def get_shows_with_venues(id):
     past_shows = []
     upcoming_shows = []
     shows = db.session.query(
-        Venue.id, 
-        Venue.name, 
-        Venue.image_link, 
+        Venue.id,
+        Venue.name,
+        Venue.image_link,
         Show.start_time
-        ).join(Venue
-        ).filter(Show.artist_id==id).all()
+    ).join(Venue
+           ).filter(Show.artist_id == id).all()
 
     for show in shows:
         show = dict(zip(keys, show))
@@ -184,6 +185,7 @@ def get_shows_with_venues(id):
 
     return past_shows, upcoming_shows
 
+
 def get_full_artist(id):
     """
     Gets all details of the selected artist including past and upcoming shows.
@@ -193,7 +195,6 @@ def get_full_artist(id):
     Returns: Dictionary of all details related to that artist.
     """
     artist = Artist.query.get(id)
-    artist.genres = format_genres(artist.genres)
     artist = artist.to_dict()
     past_shows, upcoming_shows = get_shows_with_venues(id)
     artist['past_shows'] = past_shows
@@ -206,6 +207,7 @@ def get_full_artist(id):
 # Shows' Services.
 #----------------------------------------------------------------------------#
 
+
 def get_all_shows():
     """
     Gets all shows from the database.
@@ -213,18 +215,19 @@ def get_all_shows():
     Returns: List of dictionaries containing venue name, artist name and artist's image.
     """
     shows = db.session.query(
-        Show, 
-        Venue.name, 
-        Artist.name, 
+        Show,
+        Venue.name,
+        Artist.name,
         Artist.image_link
-        ).join(
-            Venue
-            ).join(
-                Artist
-                ).all()
+    ).join(
+        Venue
+    ).join(
+        Artist
+    ).all()
     result = []
     for show in shows:
         show_dict = show['Show'].to_dict()
+        show_dict['start_time'] = str(show_dict['start_time'])
         show_dict['venue_name'] = show[1]
         show_dict['artist_name'] = show[2]
         show_dict['artist_image_link'] = show['image_link']

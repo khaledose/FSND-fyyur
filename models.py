@@ -2,14 +2,17 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from server import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = db = SQLAlchemy()
 
 #----------------------------------------------------------------------------#
 # Models.
 #----------------------------------------------------------------------------#
 
+
 class Venue(db.Model):
-    __tablename__ = 'Venue'
+    __tablename__ = 'venues'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
@@ -17,113 +20,56 @@ class Venue(db.Model):
     state = db.Column(db.String(120), nullable=False)
     address = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(120), nullable=False)
-    genres = db.Column(db.String(160), nullable=False)
+    genres = db.Column(db.ARRAY(db.String), nullable=False)
     image_link = db.Column(db.String(500), nullable=True)
-    website = db.Column(db.String(120), nullable=True)
+    website_link = db.Column(db.String(120), nullable=True)
     facebook_link = db.Column(db.String(120), nullable=True)
     seeking_talent = db.Column(db.Boolean, nullable=False)
     seeking_description = db.Column(db.String(500), nullable=True)
 
     def __repr__(self) -> str:
-        return f'''Venues(
-                Venue id={self.id}, 
-                name={self.name}, 
-                city={self.city}, 
-                state={self.state}, 
-                address={self.address}, 
-                phone={self.phone}, 
-                genres={self.genres},
-                image_link={self.image_link},
-                website={self.website},
-                facebook_link={self.facebook_link},
-                seeking_talent={self.seeking_talent},
-                seeking_description={self.seeking_description}
-            )
-        '''
+        return str(self.to_dict())
 
     def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "genres": self.genres,
-            "address": self.address,
-            "city": self.city,
-            "state": self.state,
-            "phone": self.phone,
-            "website": self.website,
-            "facebook_link": self.facebook_link,
-            "seeking_talent": self.seeking_talent,
-            "seeking_description": self.seeking_description,
-            "image_link": self.image_link
-        }
+        return vars(self)
+
 
 class Artist(db.Model):
-    __tablename__ = 'Artist'
+    __tablename__ = 'artists'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     city = db.Column(db.String(120), nullable=False)
     state = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(120), nullable=False)
-    genres = db.Column(db.String(160), nullable=False)
+    genres = db.Column(db.ARRAY(db.String), nullable=False)
     image_link = db.Column(db.String(500), nullable=True)
-    website = db.Column(db.String(120), nullable=True)
+    website_link = db.Column(db.String(120), nullable=True)
     facebook_link = db.Column(db.String(120), nullable=True)
     seeking_venue = db.Column(db.Boolean, nullable=False)
     seeking_description = db.Column(db.String(500), nullable=True)
 
     def __repr__(self) -> str:
-        return f'''Artists(
-                Venue id={self.id}, 
-                name={self.name}, 
-                city={self.city}, 
-                state={self.state}, 
-                phone={self.phone}, 
-                genres={self.genres},
-                image_link={self.image_link},
-                website={self.website},
-                facebook_link={self.facebook_link},
-                seeking_venue={self.seeking_venue},
-                seeking_description={self.seeking_description}
-            )
-        '''
+        return str(self.to_dict())
 
     def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "genres": self.genres,
-            "city": self.city,
-            "state": self.state,
-            "phone": self.phone,
-            "website": self.website,
-            "facebook_link": self.facebook_link,
-            "seeking_venue": self.seeking_venue,
-            "seeking_description": self.seeking_description,
-            "image_link": self.image_link
-        }
+        return vars(self)
+
 
 class Show(db.Model):
-    __tablename__ = 'Show'
+    __tablename__ = 'shows'
 
     id = db.Column(db.Integer, primary_key=True)
-    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id', ondelete='CASCADE'), nullable=False)
+    artist_id = db.Column(db.Integer, db.ForeignKey(
+        'artists.id', ondelete='CASCADE'), nullable=False)
     artist = db.relationship('Artist')
     venue = db.relationship('Venue')
-    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id', ondelete='CASCADE'), nullable=False)
+    venue_id = db.Column(db.Integer, db.ForeignKey(
+        'venues.id', ondelete='CASCADE'), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
 
     def __repr__(self) -> str:
-        return f'''Shows(
-                Artist ID={self.artist_id},
-                Venue ID={self.venue_id},
-                Date={self.start_time}
-            )
-        '''
-    
+        return str(self.to_dict())
+
     def to_dict(self):
-        return {
-            'venue_id': self.venue_id,
-            'artist_id': self.artist_id,
-            'start_time': str(self.start_time)
-        }
+        return vars(self)

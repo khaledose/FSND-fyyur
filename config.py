@@ -14,3 +14,6 @@ DB_NAME = os.getenv('DB_NAME', 'fyyurapp')
 
 DB_PATH = 'postgresql+psycopg2://{}:{}@{}/{}'.format(DB_USER, DB_PASSWORD, DB_HOST, DB_NAME)
 SQLALCHEMY_DATABASE_URI = DB_PATH
+
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
